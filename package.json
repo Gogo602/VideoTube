@@ -1,0 +1,28 @@
+{
+  "name": "videotube",
+  "version": "1.0.0",
+  "description": "Project inspired by youtube",
+  "keywords": [
+    "Nodejs",
+    "Mongoose",
+    "Express",
+    "Backend"
+  ],
+  "license": "ISC",
+  "author": "Gogo Benson",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9",
+    "prettier": "^3.5.3"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "mongoose": "^8.13.0"
+  }
+}
