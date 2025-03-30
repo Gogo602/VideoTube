@@ -1,0 +1,312 @@
+aggregation
+
+[
+{
+$match:{
+isActive: true
+}
+},
+{
+$count: 'activeUsers'
+}
+]
+
+[
+{
+$group: {
+_id: "$gender",
+}
+}
+]
+
+[
+{
+$group: {
+_id: null,
+averageage: {
+$avg: "$age"
+}
+}
+}
+]
+
+calculating averageage
+[
+{
+$group: {
+_id: "$gender",
+averageage: {
+$avg: "$age"
+}
+}
+}
+]
+
+checking favoriteFruit
+[
+{
+$group: {
+_id: "$favoriteFruit"
+}
+}
+]
+
+calculating the values of each favoriteFruit in descnding order
+[
+{
+$group: {
+_id: "$favoriteFruit",
+count: {
+$sum: 1
+}
+},
+},
+]
+
+finding and calculating the top five favoriteFruit in ascending order (top 5 most common fruit)
+[
+//stage 1, finding favoriteFruit and count (acculating)
+{
+$group: {
+_id: "$favoriteFruit",
+count: {
+$sum: 1
+}
+},
+},
+//stage 2. ascending order
+{
+$sort: {
+count: -1
+}
+},
+//stage 3 getting top 5 values
+{
+$limit: 5
+}
+]
+
+//counting male and female
+me
+[
+{
+$group: {
+_id: "$gender",
+count: {
+$sum: 2
+}
+}
+},
+]
+
+instructor
+[
+{
+$group: {
+_id: "$gender",
+count: {
+$sum: 1
+}
+}
+},
+]
+
+//countries with the highest number of users
+me
+[
+{
+$group: {
+_id: "$company.location.country",
+countCountry: {
+$sum: 1
+}
+}
+},
+{
+$sort: {
+countCountry: -1
+}
+},
+{
+$limit: 2
+}
+]
+
+//list all unique eyecolors in the collection
+me
+[
+{
+$group: {
+_id: "$eyeColor",
+}
+}
+]
+
+finding average number of tags
+instructor: method 1,
+[
+{
+$unwind: "$tags"
+},
+{
+$group: {
+_id: "$_id",
+numberOfTask: {$sum: 1}
+}
+},
+{
+$group: {
+_id: null,
+averageTags: {$avg: "$numberOfTask"}
+}
+}
+]
+method 2
+[
+{
+$addFields: {
+      numberOfTags: {
+        $size: {$ifNull: ["$tags", []]}
+      } 
+    }
+  },
+  {
+    $group: {
+      _id: null,
+      averageTags: {$avg: "$numberOfTags"}
+}
+}
+]
+
+//how many users has enim
+instructor
+[
+{
+$match: {
+tags: "enim"
+}
+},
+{
+$count: 'usersWitheEnim'
+}
+]
+
+//what are he names and age of users who are active and has velit as a tags
+instructor
+[
+{
+$match: {
+isActive: false, tags: "velit",
+}
+},
+{
+$project: {
+name: 1, age: 1
+}
+}
+]
+
+//how many users have a phone number starting with '+1 (940)'?
+instructor
+[
+{
+$match: {
+"company.phone": /^\+1 \(940\)/
+
+        }
+
+},
+{
+$count: 'Special'
+}
+]
+
+//who has registered most recently
+instructor
+[
+{
+$sort: {
+registered: -1
+}
+},
+{$limit: 1},
+{
+$project: {
+name: 1,
+registered: 1,
+favoriteFruit: 1
+}
+}
+]
+
+//categorize users by favoriteFruit
+instructor
+[
+{
+$group: {
+_id: "$favoriteFruit",
+users: { $push: "$name"}
+}
+}
+]
+
+how many users have ad as the second tag in their list of tags
+[
+{
+$match: {
+"tags.1": "ad"
+}
+},
+{
+$count: 'secondTag'
+}
+]
+
+Find users who have bot enim and id as their tags.
+instructor
+[
+{
+$match: {
+            tags: {$all: ["enim", "id"]}
+}
+}
+]
+
+//list all the countries located in usa with their corresponding user countCountry
+instructor
+[
+{
+$match: {
+            "company.location.country": "USA"
+        }
+  },
+  {
+    $group: {
+      _id: "$company.title",
+usercount: {$sum: 1}
+
+    }
+
+}
+]
+
+lookup
+instructor
+
+[
+{
+$lookup: {
+      from: "authors",
+      localField: "author_id",
+      foreignField: "_id",
+      as: "author_details"
+    }
+  },
+  {
+    $addFields: {
+      author_details: {
+        $arrayElemAt: ["$author_details", 0]
+}
+}
+}
+]
